@@ -1,9 +1,8 @@
 const fs = require('fs');
 const express = require('express')
 const app = express();
-var contador1 = 0
-var contador2 = 0
-
+var contadorItems = 0
+var contadorItemRandom = 0
 class Archivo {
     constructor(nombre) {
         this.nombre = nombre;
@@ -40,25 +39,23 @@ const miArchivo = new Archivo("./productos.txt")
 app.listen('3030', () => {
     console.log("el servidor está armado")
 })
-items()
+
 app.get('/items', (req, res) => {
-    items()
-    contador1++
-    console.log("contador 1 :" + contador1)
-    res.send(itemsObject)
-
-})
-
-itemRandom()
+    (async () => {let itemsObject = await items()
+    contadorItems++
+    console.log("contador visitas a Items :" + contadorItems)
+    res.send(itemsObject)})()
+  })
+  
 app.get('/item-random', (req, res) => {
+    (async () => {let itemRandomObject = await itemRandom()
     itemRandom()
-    contador2++
-    console.log("contador 2 :" + contador2)
-    res.send(itemRandomObject)
-})
+    contadorItemRandom++
+    console.log("contador de visitas a ItemRandom :" + contadorItemRandom)
+    res.send(itemRandomObject)})()
+  })
 
-app.get('/visitas', (req, res) => {
-    itemRandom()
-    visitas = { items: contador1, item: contador2 }
-    res.send(visitas)
-})
+  app.get('/visitas', (req, res) => {
+    let visitas = { items: contadorItems, item: contadorItemRandom }
+    res.send(visitas)})
+
